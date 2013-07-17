@@ -1,0 +1,32 @@
+mode server
+port <%= scope.lookupvar('port') %>
+proto <%= scope.lookupvar('proto') %>-server
+dev <%= scope.lookupvar('dev') %>
+ca /etc/openvpn/<%= scope.lookupvar('name') %>/<%= scope.lookupvar('ca') %>
+cert /etc/openvpn/<%= scope.lookupvar('name') %>/<%= scope.lookupvar('crt') %>
+key /etc/openvpn/<%= scope.lookupvar('name') %>/<%= scope.lookupvar('key') %>
+dh /etc/openvpn/<%= scope.lookupvar('name') %>/<%= scope.lookupvar('dh') %>
+<% if scope.lookupvar('ipp') -%>
+ifconfig-pool-persist <%= scope.lookupvar('name') %>/ipp.txt
+<% end -%>
+keepalive 10 120
+<% if scope.lookupvar('compression') and not scope.lookupvar('compression').empty?-%>
+<%= scope.lookupvar('compression') %>
+<% end -%>
+persist-key
+persist-tun
+status <%= scope.lookupvar('status_log') %>
+verb <%= scope.lookupvar('verb') %>
+local <%= scope.lookupvar('ip') %>
+<% if scope.lookupvar('tls_server') -%>
+tls-server
+<% end -%>
+group <%= scope.lookupvar('group') %>
+user <%= scope.lookupvar('user') %>
+<% if scope.lookupvar('logfile') -%>
+log-append <%= scope.lookupvar('logfile') %>
+<% end -%>
+<% if scope.lookupvar('pamlogin') -%>
+username-as-common-name
+plugin /usr/lib/openvpn/openvpn-auth-pam.so /etc/pam.d/login
+<% end -%>

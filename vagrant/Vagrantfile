@@ -1,0 +1,69 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+$hosts = {
+  puppetmaster:     { fqdn: "puppetmaster.local",     ip: "10.255.255.100" },
+  openvpn_precise:  { fqdn: "precise.openvpn.local",  ip: "10.255.255.10" },
+}
+
+def mk_etc_hosts_of name
+<<-EOF
+echo "
+  127.0.0.1   localhost
+  127.0.1.1   #{$hosts[name][:fqdn]}
+
+  # The following lines are desirable for IPv6 capable hosts
+  ::1     localhost ip6-localhost ip6-loopback
+  fe00::0 ip6-localnet
+  ff00::0 ip6-mcastprefix
+  ff02::1 ip6-allnodes
+  ff02::2 ip6-allrouters
+
+  # all hosts:
+  #{
+    $hosts.map{|k,v| v[:ip]+" "+v[:fqdn]}.
+      join("\n")
+  }
+" > /etc/hosts
+EOF
+end
+
+def server_config c, name
+  c.vm.host_name = $hosts[name][:fqdn]
+  c.vm.network :hostonly, $hosts[name][:ip]
+
+  # bootstrap /etc/hosts
+  c.vm.provision :shell, inline: mk_etc_hosts_of(name)
+
+  c.vm.share_folder "modules", "/etc/puppet/modules/openvpn", "../."
+  c.vm.provision :puppet_server do |puppet|
+    puppet.puppet_server = $hosts[:puppetmaster][:fqdn]
+  end
+end
+
+Vagrant::Config.run do |config|
+
+  config.vm.define :puppetmaster do |c|
+    c.vm.box = 'precise64'
+    c.vm.host_name = $hosts[:puppetmaster][:fqdn]
+    c.vm.network :hostonly, $hosts[:puppetmaster][:ip]
+
+    c.vm.provision :shell, inline: mk_etc_hosts_of(:puppetmaster)
+    c.vm.provision :shell, path: "scripts/setup-puppetmaster.sh"
+
+    c.vm.share_folder "manifests", "/etc/puppet/manifests", "manifests"
+    c.vm.share_folder "modules", "/etc/puppet/modules", "modules"
+    c.vm.share_folder "openvpn", "/etc/puppet/modules/openvpn", "../."
+    c.vm.share_folder "openvpn-client", "/etc/openvpn/client", "openvpn.client"
+
+    $hosts.find_all{|k,v| k != :puppetmaster}.each do |k,v|
+      c.vm.share_folder "share-"+v[:fqdn], "/secrets/openvpn/"+v[:fqdn], "openvpn.d"
+    end
+  end
+
+  config.vm.define :openvpn_precise do |c|
+    c.vm.box = 'precise64'
+    server_config c, :openvpn_precise
+  end
+
+end
