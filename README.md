@@ -52,6 +52,7 @@ Look into `vagrant` folder. You can simply:
 
 * This puppet module is partly inspired by `luxflux-openvpn`. Some pieces of code from this project were used as well.
 * Thanks to Diana Bucuci for 2-factor OpenVPN!
+* Thanks to everyone who contributed to OpenVPN, its components and the documentation!!
 
 
 # License and Author
