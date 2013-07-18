@@ -10,6 +10,8 @@ define openvpn::server(
   $crt = 'keys/server.crt',
   $dh = 'keys/dh1024.pem',
   $ipp = false,
+  $ccd = false,
+  $ccd_exclusive = false,
   $ip_pool = [],
   $compression = 'comp-lzo',
   $logfile = false,
