@@ -44,8 +44,9 @@ Look into `vagrant` folder. You can simply:
 
 ## Differences to other implementations
 
-* `luxflux-openvpn` (https://github.com/luxflux/puppet-openvpn)[https://github.com/luxflux/puppet-openvpn]
-  `luxflux-openvpn` is a full-fledged implementation that includes key/cert-generation and handling. If you want that, I highly recommend this module. If you want to manage keys/certs differently and only let puppet install OpenVPN without taking over secrets management, then use this module instead.
+* `luxflux-openvpn` (https://github.com/luxflux/puppet-openvpn)[https://github.com/luxflux/puppet-openvpn]  
+  `luxflux-openvpn` is a full-fledged implementation that includes key/cert-generation and handling. If you want that, I highly recommend this module. If you want to manage keys/certs differently and only let puppet install OpenVPN without taking over secrets management, then use this module instead.  
+  If you have multiple VPN points you use with the same certs or want to ensure you can restore your VPN point with puppet without creating new certificates, then this is for you.
 
 
 ## Kudos and references
