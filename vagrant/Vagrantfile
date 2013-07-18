@@ -52,7 +52,6 @@ Vagrant::Config.run do |config|
     c.vm.provision :shell, path: "scripts/setup-puppetmaster.sh"
 
     c.vm.share_folder "manifests", "/etc/puppet/manifests", "manifests"
-    c.vm.share_folder "modules", "/etc/puppet/modules", "modules"
     c.vm.share_folder "openvpn", "/etc/puppet/modules/openvpn", "../."
     c.vm.share_folder "openvpn-client", "/etc/openvpn/client", "openvpn.client"
 
