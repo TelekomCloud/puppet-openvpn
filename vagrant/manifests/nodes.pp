@@ -7,6 +7,8 @@ node "precise.openvpn.local" {
     ip => '0.0.0.0',
     port => '443',
     proto => 'tcp',
+    ccd => 'ccd',
+    ccd_exclusive => true;
   }
 }
 
