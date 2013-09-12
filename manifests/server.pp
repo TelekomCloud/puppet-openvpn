@@ -18,6 +18,11 @@ define openvpn::server(
   $pamlogin = false
 ) {
 
+  $tls_server = $proto ? {
+    /tcp/   => true,
+    default => false
+  }
+
   package { 'openvpn': 
     ensure => installed; 
   }
@@ -25,27 +30,21 @@ define openvpn::server(
   # make user the user and group exist
   # sudo addgroup --system --no-create-home --disabled-login --group openvpn
   # sudo adduser --system --no-create-home --disabled-login --ingroup openvpn openvpn 
-  group { "${group}":
+  ->group { "${group}":
     ensure => present,
     system => true,
   }
-  user { "${user}":
+  ->user { "${user}":
     ensure => present,
     comment => "openvpn user",
     gid => "${group}",
     membership => minimum,
     shell => "/sbin/nologin",
     home => "/dev/null",
-    require => Group[$group],
     system => true,
   }
-
-  $tls_server = $proto ? {
-    /tcp/   => true,
-    default => false
-  }
   
-  file {
+  ->file {
     "/etc/openvpn/${name}.conf":
       owner   => root,
       group   => root,
@@ -53,16 +52,15 @@ define openvpn::server(
       content => template('openvpn/server.erb');
   }
 
-  file {
+  ->file {
     "/etc/openvpn/${name}":
       ensure  => directory,
       recurse => true,
-      require => Package['openvpn'],
-      owner   => 'root', group => 0, mode => '0755',
+      owner   => 'root', group => ', mode => '0755',
       source  => "puppet:///openvpn/${name}";
   }
 
-  service {
+  ->service {
     'openvpn':
       ensure      => running,
       enable      => true,
