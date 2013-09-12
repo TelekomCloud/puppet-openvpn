@@ -46,9 +46,9 @@ define openvpn::server(
   
   ->file {
     "/etc/openvpn/${name}.conf":
-      owner   => root,
-      group   => root,
-      mode    => '0444',
+      owner   => 'root',
+      group   => 'openvpn',
+      mode    => '0440',
       content => template('openvpn/server.erb');
   }
 
@@ -56,7 +56,9 @@ define openvpn::server(
     "/etc/openvpn/${name}":
       ensure  => directory,
       recurse => true,
-      owner   => 'root', group => ', mode => '0755',
+      owner   => 'root',
+      group   => 'openvpn',
+      mode    => '0750',
       source  => "puppet:///openvpn/${name}";
   }
 
