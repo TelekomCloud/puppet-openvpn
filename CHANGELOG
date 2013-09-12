@@ -1,1 +1,5 @@
+0.2: added support for client-configuration
+     fixed visibility of keys from world to group openvpn
+     fixed warnings from puppet-lint
+     improved dependency handling
 0.1: initial release + vagrant

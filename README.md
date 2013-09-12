@@ -55,7 +55,6 @@ Look into `vagrant` folder. You can simply:
 * Thanks to Diana Bucuci for 2-factor OpenVPN!
 * Thanks to everyone who contributed to OpenVPN, its components and the documentation!!
 
-
 # License and Author
 
 Author:: Dominik Richter <do.richter@telekom.de>  
