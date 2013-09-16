@@ -36,3 +36,24 @@ client-config-dir /etc/openvpn/<%= scope.lookupvar('name') %>/<%= scope.lookupva
 ccd-exclusive
 <% end -%>
 <% end -%>
+<% if :undef != scope.lookupvar('client_connect') -%>
+client-connect <%= scope.lookupvar('client_connect') %>
+<% end -%>
+<% if :undef != scope.lookupvar('client_disconnect') -%>
+client-disconnect <%= scope.lookupvar('client_disconnect') %>
+<% end -%>
+<% if :undef != scope.lookupvar('server') -%>
+server <%= scope.lookupvar('server') %>
+<% end -%>
+<% if :undef != scope.lookupvar('push') -%>
+push <%= scope.lookupvar('push') %>
+<% end -%>
+<% if :undef != scope.lookupvar('topology') -%>
+topology <%= scope.lookupvar('topology') %>
+<% end -%>
+<% if :undef != scope.lookupvar('up') -%>
+up <%= scope.lookupvar('up') %>
+<% end -%>
+<% if :undef != scope.lookupvar('down') -%>
+down <%= scope.lookupvar('down') %>
+<% end -%>
