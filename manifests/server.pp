@@ -1,3 +1,6 @@
+  # Configure OpenVPN Services.
+  #
+
 define openvpn::server(
   $dev               = 'tun0',
   $ip                = '0.0.0.0',
@@ -22,9 +25,11 @@ define openvpn::server(
   $client_disconnect = undef,
   $topology          = undef,
   $server            = undef,
+  $server6           = undef,
   $push              = undef,
   $up                = undef,
-  $down              = undef
+  $down              = undef,
+  $route             = undef,
 ) {
 
   $tls_server = $proto ? {

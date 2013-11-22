@@ -45,8 +45,14 @@ client-disconnect <%= scope.lookupvar('client_disconnect') %>
 <% if :undef != scope.lookupvar('server') -%>
 server <%= scope.lookupvar('server') %>
 <% end -%>
+<% if :undef != scope.lookupvar('server6') -%>
+server-ipv6 <%= scope.lookupvar('server6') %>
+<% end -%>
 <% if :undef != scope.lookupvar('push') -%>
 push <%= scope.lookupvar('push') %>
+<% end -%>
+<% if :undef != scope.lookupvar('route') -%>
+route <%= scope.lookupvar('route') %>
 <% end -%>
 <% if :undef != scope.lookupvar('topology') -%>
 topology <%= scope.lookupvar('topology') %>
