@@ -1,3 +1,50 @@
+    # == Define: OpenVPN Server
+    #
+    # Setting up a server based OpenServer configuration without
+    # creation of any SSL Certs.
+    #
+    # === Parameters
+    #
+    # [*proto*]
+    #   IPv4 udp or tcp
+    #   IPv6 udp6 or tcp6
+    #   Defines the L4 protocol you want to used. The usage of IPv4 and IPv6 at
+    #   the same time is possible.
+    #
+    # [*server6*]
+    #   ipv6addr/bits
+    #   Enabling IPv6 helper directive of OpenVPN and will allocate given
+    #   address for server and client. Will bind to first IP of the network.
+    #
+    #
+    # === Examples
+    #
+    #  IPv6 example without two-factor and one IPv4/IPv6 address for clients:
+    #     openvpn::server { 'testlord':
+    #      dev     => 'tun0',
+    #      ip      => '10.0.0.2',
+    #      port    => '443',
+    #      proto   => 'tcp, tcp6',
+    #      dh      => 'keys/dh4096.pem',
+    #      ipp     => 'true',
+    #      server  => '172.17.28.0 255.255.255.0',
+    #      server6 => 'fc00:dead::1/65',
+    #      push    => 'route 172.17.27.0 255.255.255.0',
+    #      route   => '172.17.27.0 255.255.255.0',
+    #  }
+    #
+    #
+    # === Authors
+    #
+    # Dominik Richter <do.richter@telekom.de>
+    # Kurt Huwig <k.huwig@telekom.de>
+    # Jan Alexander Slabiak <4k3nd0@gmail.com>
+    #
+    # === Copyright
+    #
+    # Copyright:: 2013, Deutsche Telekom AG,  Apache License, Version 2.0
+    #
+
 define openvpn::server(
   $dev               = 'tun0',
   $ip                = '0.0.0.0',
@@ -22,9 +69,11 @@ define openvpn::server(
   $client_disconnect = undef,
   $topology          = undef,
   $server            = undef,
+  $server6           = undef,
   $push              = undef,
   $up                = undef,
-  $down              = undef
+  $down              = undef,
+  $route             = undef,
 ) {
 
   $tls_server = $proto ? {
