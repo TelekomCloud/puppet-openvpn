@@ -1,6 +1,9 @@
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
 
+# Vagrantfile API/syntax version. Don't touch unless you know what you're doing!
+VAGRANTFILE_API_VERSION = "2"
+
 $hosts = {
   puppetmaster:     { fqdn: "puppetmaster.local",     ip: "10.255.255.100" },
   openvpn_precise:  { fqdn: "precise.openvpn.local",  ip: "10.255.255.10" },
@@ -25,38 +28,41 @@ echo "
       join("\n")
   }
 " > /etc/hosts
+hostname #{$hosts[name][:fqdn]}
+echo "#{$hosts[name][:fqdn]}" > /etc/hostname
 EOF
 end
 
 def server_config c, name
-  c.vm.host_name = $hosts[name][:fqdn]
-  c.vm.network :hostonly, $hosts[name][:ip]
+  c.vm.hostname = $hosts[name][:fqdn]
+  c.vm.network "private_network", ip: $hosts[name][:ip]
 
   # bootstrap /etc/hosts
-  c.vm.provision :shell, inline: mk_etc_hosts_of(name)
+  c.vm.provision "shell", inline: mk_etc_hosts_of(name)
 
-  c.vm.share_folder "modules", "/etc/puppet/modules/openvpn", "../."
-  c.vm.provision :puppet_server do |puppet|
+  c.vm.synced_folder "../.", "/etc/puppet/modules/openvpn"
+  c.vm.provision "puppet_server" do |puppet|
     puppet.puppet_server = $hosts[:puppetmaster][:fqdn]
   end
 end
 
-Vagrant::Config.run do |config|
+
+Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
   config.vm.define :puppetmaster do |c|
     c.vm.box = 'precise64'
-    c.vm.host_name = $hosts[:puppetmaster][:fqdn]
-    c.vm.network :hostonly, $hosts[:puppetmaster][:ip]
+    c.vm.hostname = $hosts[:puppetmaster][:fqdn]
+    c.vm.network "private_network", ip: $hosts[:puppetmaster][:ip]
 
-    c.vm.provision :shell, inline: mk_etc_hosts_of(:puppetmaster)
-    c.vm.provision :shell, path: "scripts/setup-puppetmaster.sh"
+    c.vm.provision "shell", inline: mk_etc_hosts_of(:puppetmaster)
+    c.vm.provision "shell", path: "scripts/setup-puppetmaster.sh"
 
-    c.vm.share_folder "manifests", "/etc/puppet/manifests", "manifests"
-    c.vm.share_folder "openvpn", "/etc/puppet/modules/openvpn", "../."
-    c.vm.share_folder "openvpn-client", "/etc/openvpn/client", "openvpn.client"
+    c.vm.synced_folder "manifests", "/etc/puppet/manifests"
+    c.vm.synced_folder "../.", "/etc/puppet/modules/openvpn"
+    c.vm.synced_folder "openvpn.client", "/etc/openvpn/client"
 
     $hosts.find_all{|k,v| k != :puppetmaster}.each do |k,v|
-      c.vm.share_folder "share-"+v[:fqdn], "/secrets/openvpn/"+v[:fqdn], "openvpn.d"
+      c.vm.synced_folder "openvpn.d", "/secrets/openvpn/"+v[:fqdn]
     end
   end
 
