@@ -70,7 +70,7 @@ define openvpn::server(
   $topology          = undef,
   $server            = undef,
   $server6           = undef,
-  $push              = undef,
+  $push              = [],
   $up                = undef,
   $down              = undef,
   $route             = undef,
