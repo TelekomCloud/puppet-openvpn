@@ -74,6 +74,7 @@ define openvpn::server(
   $up                = undef,
   $down              = undef,
   $route             = undef,
+  $bettercrypto      = true,
 ) {
 
   $tls_server = $proto ? {
