@@ -28,7 +28,7 @@ log-append <%= scope.lookupvar('logfile') %>
 <% end -%>
 <% if scope.lookupvar('pamlogin') -%>
 username-as-common-name
-plugin /usr/lib/openvpn/openvpn-auth-pam.so /etc/pam.d/login
+plugin <%= scope.lookupvar('pam_auth_library') %> /etc/pam.d/login
 <% end -%>
 <% if scope.lookupvar('ccd')%>
 client-config-dir /etc/openvpn/<%= scope.lookupvar('name') %>/<%= scope.lookupvar('ccd') %>
