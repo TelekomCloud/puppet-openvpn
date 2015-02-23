@@ -82,6 +82,15 @@ define openvpn::server(
     default => false
   }
 
+  case $::operatingsystemrelease {
+    12.04: {
+      $pam_auth_library = '/usr/lib/openvpn/openvpn-auth-pam.so'
+    }
+    default: {
+      $pam_auth_library = '/usr/lib/openvpn/openvpn-plugin-auth-pam.so'
+    }
+  }
+
   package { 'openvpn':
     ensure => installed;
   }
