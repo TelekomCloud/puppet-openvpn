@@ -142,7 +142,7 @@ define openvpn::server(
       owner   => 'root',
       group   => 'openvpn',
       mode    => '0750',
-#      source  => "puppet:///openvpn/${name}";
+      source  => "puppet:///openvpn/${name}";
   }
 
   # this should be sth along the lines of ensure_resource
