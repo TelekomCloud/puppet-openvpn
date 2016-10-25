@@ -54,8 +54,10 @@ define openvpn::server(
   $group             = 'openvpn',
   $ca                = 'keys/ca.crt',
   $key               = 'keys/server.key',
-  $crt               = 'keys/server.crt',
+  $crt               = undef,
+  $cert              = undef,
   $dh                = 'keys/dh1024.pem',
+  $crl               = undef,
   $ipp               = false,
   $ccd               = false,
   $ccd_exclusive     = false,
@@ -76,6 +78,18 @@ define openvpn::server(
   $route             = undef,
   $bettercrypto      = true,
 ) {
+
+  # old version used crt for name of cert file; new version uses cert; here be logic to be backwards compatible.
+  if $cert == undef {
+    if $crt == undef {
+      $real_cert = 'keys/server.crt'
+    } else {
+      $real_cert = $crt
+      notify {"openvpn::server $title is defined with variable crt set to $crt; variable crt is deprecated so please use variable cert instead":}
+    }
+  } else {
+    $real_cert = $cert
+  }
 
   $tls_server = $proto ? {
     /tcp/   => true,
@@ -131,6 +145,9 @@ define openvpn::server(
       source  => "puppet:///openvpn/${name}";
   }
 
+  # this should be sth along the lines of ensure_resource
+  # to enable definition of multiple vpn servers
+  # but adding module dependency *properly* is out of scope atm
   ->service {
     'openvpn':
       ensure      => running,

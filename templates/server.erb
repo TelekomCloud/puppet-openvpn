@@ -3,9 +3,14 @@ port <%= scope.lookupvar('port') %>
 proto <%= scope.lookupvar('proto') %>-server
 dev <%= scope.lookupvar('dev') %>
 ca /etc/openvpn/<%= scope.lookupvar('name') %>/<%= scope.lookupvar('ca') %>
-cert /etc/openvpn/<%= scope.lookupvar('name') %>/<%= scope.lookupvar('crt') %>
+cert /etc/openvpn/<%= scope.lookupvar('name') %>/<%= scope.lookupvar('real_cert') %>
 key /etc/openvpn/<%= scope.lookupvar('name') %>/<%= scope.lookupvar('key') %>
 dh /etc/openvpn/<%= scope.lookupvar('name') %>/<%= scope.lookupvar('dh') %>
+
+<% if scope.lookupvar('crl') and not scope.lookupvar('crl').empty?-%>
+crl-verify /etc/openvpn/<%= scope.lookupvar('name') %>/<%= scope.lookupvar('crl') %>
+<% end -%>
+
 <% if scope.lookupvar('ipp') -%>
 ifconfig-pool-persist <%= scope.lookupvar('name') %>/ipp.txt
 <% end -%>
@@ -49,10 +54,10 @@ server <%= scope.lookupvar('server') %>
 server-ipv6 <%= scope.lookupvar('server6') %>
 <% end -%>
 <% if :undef != scope.lookupvar('push') -%>
-<% if push.size == 0 then -%>
+<% if @push.size == 0 then -%>
 push <%= scope.lookupvar('push') %>
 <% else -%>
-<% push.each do |pusher| -%>
+<% @push.each do |pusher| -%>
 push <%= pusher %>
 <% end -%>
 <% end -%>
