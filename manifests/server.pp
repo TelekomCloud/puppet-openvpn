@@ -39,6 +39,7 @@
     # Dominik Richter <do.richter@telekom.de>
     # Kurt Huwig <k.huwig@telekom.de>
     # Jan Alexander Slabiak <4k3nd0@gmail.com>
+    # Sebastian Posner <sebastian.posner@telekom.de>
     #
     # === Copyright
     #
@@ -52,11 +53,11 @@ define openvpn::server(
   $proto             = 'tcp',
   $user              = 'openvpn',
   $group             = 'openvpn',
-  $ca                = 'keys/ca.crt',
-  $key               = 'keys/server.key',
-  $crt               = undef,
-  $cert              = undef,
-  $dh                = 'keys/dh1024.pem',
+  $cert_dir          = "/etc/openvpn/${name}/keys",
+  $ca                = 'ca.crt',
+  $key               = 'server.key',
+  $cert              = 'server.crt',
+  $dh                = 'dh.pem',
   $crl               = undef,
   $ipp               = false,
   $ccd               = false,
@@ -78,18 +79,6 @@ define openvpn::server(
   $route             = undef,
   $bettercrypto      = true,
 ) {
-
-  # old version used crt for name of cert file; new version uses cert; here be logic to be backwards compatible.
-  if $cert == undef {
-    if $crt == undef {
-      $real_cert = 'keys/server.crt'
-    } else {
-      $real_cert = $crt
-      notify {"openvpn::server $title is defined with variable crt set to $crt; variable crt is deprecated so please use variable cert instead":}
-    }
-  } else {
-    $real_cert = $cert
-  }
 
   $tls_server = $proto ? {
     /tcp/   => true,
@@ -142,7 +131,6 @@ define openvpn::server(
       owner   => 'root',
       group   => 'openvpn',
       mode    => '0750',
-      source  => "puppet:///openvpn/${name}";
   }
 
   # this should be sth along the lines of ensure_resource
