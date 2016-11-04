@@ -2,13 +2,13 @@ mode server
 port <%= scope.lookupvar('port') %>
 proto <%= scope.lookupvar('proto') %>-server
 dev <%= scope.lookupvar('dev') %>
-ca <%= scope.lookupvar('cert_dir') %>/<%= scope.lookupvar('ca') %>
-cert <%= scope.lookupvar('cert_dir') %>/<%= scope.lookupvar('cert') %>
-key <%= scope.lookupvar('cert_dir') %>/<%= scope.lookupvar('key') %>
-dh <%= scope.lookupvar('cert_dir') %>/<%= scope.lookupvar('dh') %>
+ca <%= scope.lookupvar('cert_dir').chomp('/') %>/<%= scope.lookupvar('ca') %>
+cert <%= scope.lookupvar('cert_dir').chomp('/') %>/<%= scope.lookupvar('cert') %>
+key <%= scope.lookupvar('cert_dir').chomp('/') %>/<%= scope.lookupvar('key') %>
+dh <%= scope.lookupvar('cert_dir').chomp('/') %>/<%= scope.lookupvar('dh') %>
 
 <% if scope.lookupvar('crl') and not scope.lookupvar('crl').empty?-%>
-crl-verify <%= scope.lookupvar('cert_dir') %>/<%= scope.lookupvar('crl') %>
+crl-verify <%= scope.lookupvar('cert_dir').chomp('/') %>/<%= scope.lookupvar('crl') %>
 <% end -%>
 
 <% if scope.lookupvar('ipp') -%>
