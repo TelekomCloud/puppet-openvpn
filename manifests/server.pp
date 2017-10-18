@@ -78,6 +78,7 @@ define openvpn::server(
   $down              = undef,
   $route             = undef,
   $bettercrypto      = true,
+  $shell             = "/usr/sbin/nologin",
 ) {
 
   $tls_server = $proto ? {
@@ -111,7 +112,7 @@ define openvpn::server(
     comment    => 'openvpn user',
     gid        => $group,
     membership => minimum,
-    shell      => '/sbin/nologin',
+    shell      => $shell,
     home       => '/dev/null',
     system     => true,
   }
