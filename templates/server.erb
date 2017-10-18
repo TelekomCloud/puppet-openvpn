@@ -20,6 +20,7 @@ keepalive 10 120
 <% end -%>
 persist-key
 persist-tun
+script-security 2
 status <%= scope.lookupvar('status_log') %>
 verb <%= scope.lookupvar('verb') %>
 local <%= scope.lookupvar('ip') %>
